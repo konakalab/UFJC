@@ -92,5 +92,35 @@ try:
     st.subheader("📋 クラブ別データ一覧")
     st.dataframe(ranking_df, use_container_width=True)
 
+    # --- 時系列タイムラインの追加 ---
+    st.write("---")
+    st.subheader("📅 UFJC 王座変遷タイムライン (1993 - 現在)")
+    st.markdown("下のスライダーを動かすことで、特定の年代を詳しく見ることができます。")
+
+    # タイムライン用の図を作成
+    fig_timeline = px.timeline(
+        df, 
+        x_start="StartDate", 
+        x_end="EndDate", 
+        y="Champion_Disp",
+        color="Champion_Disp", # クラブごとに色分け
+        hover_data={"StartDate": "|%Y/%m/%d", "EndDate": "|%Y/%m/%d", "Champion_Disp": False},
+        labels={"Champion_Disp": "王者"}
+    )
+
+    # レイアウトのカスタマイズ
+    fig_timeline.update_layout(
+        xaxis_title="年",
+        yaxis_title="クラブ名",
+        height=600,
+        showlegend=False, # クラブ数が多いので凡例は非表示
+        xaxis=dict(
+            rangeslider=dict(visible=True), # 下部にスクロール/ズーム用のスライダーを追加
+            type="date"
+        ),
+        yaxis=dict(autorange="reversed") # 最新が上か、時系列順かはここで調整
+    )
+
+    st.plotly_chart(fig_timeline, use_container_width=True)
 except Exception as e:
     st.error(f"エラーが発生しました: {e}")
