@@ -149,7 +149,13 @@ try:
         y="Champion_Disp",
         color="Champion_Disp", 
         color_discrete_map=st.session_state.get('color_map', {}),
-        hover_data={"StartDate": "|%Y/%m/%d", "EndDate": "|%Y/%m/%d", "Champion_Disp": False},
+        # ★ 修正ポイント1: Duration を hover_data に含める（表示自体は False にしておく）
+        hover_data={
+            "StartDate": False, 
+            "EndDate": False, 
+            "Champion_Disp": False, 
+            "Duration": True # ここを True にして内部的に保持させる
+        },
         labels={"Champion_Disp": "王者"}
     )
 
@@ -157,13 +163,12 @@ try:
     fig_timeline.update_traces(
         hovertemplate=(
             "<b>%{y}</b><br>" +                  # {クラブ名}
-            "%{base|%Y/%m/%d}から" +             # {開始日} ※px.timelineではbaseが開始日になります
-            "%{x|%Y/%m/%d} " +                  # {終了日} ※px.timelineではxが終了日になります
-            "(%{customdata[0]}日)" +             # {日数}
+            "%{base|%Y/%m/%d}から" +             # {開始日}
+            "%{x|%Y/%m/%d} " +                  # {終了日}
+            "(%{customdata[0]}日)" +             # {日数} ※hover_dataの1番目が渡されます
             "<extra></extra>"
-        ),
-        # customdataとしてDuration列の値を渡す
-        customdata=filtered_df[["Duration"]]
+        )
+        # customdata=... の行は不要になったので削除
     )
     
     fig_timeline.update_layout(
