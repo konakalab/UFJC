@@ -19,7 +19,7 @@ try:
     start_period = df['StartDate'].min().strftime('%Y/%m/%d')
     end_period = df['EndDate'].max().strftime('%Y/%m/%d')
 
-    st.title("🏆 非公式Jリーグ王座 歴代ランキング")
+    st.title("🏆 非公式Jリーグ王座(Unofficial Football J-League Champion, UFJC) 歴代ランキング")
 
     # --- 算出対象期間の表示（ここがご要望の箇所です） ---
     # 小さめの文字（caption）や、枠囲み（info）で表示すると公式感が出ます
@@ -38,25 +38,30 @@ try:
     st.caption(f"Developed by [@konakalab](https://x.com/konakalab)")
 
     # --- データ集計 ---
-    # クラブごとの合計保持日数と試合数を計算
     ranking_df = df.groupby('Champion').agg({
         'Duration': 'sum',
         'NumOfMatches': 'sum'
     }).sort_values(by='Duration', ascending=False).reset_index()
 
+    # ★ここを追加：列名を日本語に書き換え
+    ranking_df = ranking_df.rename(columns={
+        'Champion': 'クラブ名',
+        'Duration': '累計保持日数',
+        'NumOfMatches': '累計防衛試合数'
+    })
     # --- レイアウト ---
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("⏳ 累計保持日数 (Total Days)")
         fig_days = px.bar(
-            ranking_df.head(20), # 上位20チーム
-            x='Duration',
-            y='Champion',
+            ranking_df.head(20),
+            x='累計保持日数',  # 変更
+            y='クラブ名',      # 変更
             orientation='h',
-            color='Duration',
+            color='累計保持日数', # 変更
             color_continuous_scale='Reds',
-            labels={'Duration': '累計保持日数', 'Champion': 'クラブ名'}
+            labels={'累計保持日数': '日数', 'クラブ名': 'クラブ'}
         )
         fig_days.update_layout(yaxis={'categoryorder':'total ascending'})
         st.plotly_chart(fig_days, use_container_width=True)
@@ -65,12 +70,12 @@ try:
         st.subheader("⚽ 累計防衛試合数 (Total Matches)")
         fig_matches = px.bar(
             ranking_df.head(20),
-            x='NumOfMatches',
-            y='Champion',
+            x='累計防衛試合数', # 変更
+            y='クラブ名',       # 変更
             orientation='h',
-            color='NumOfMatches',
+            color='累計防衛試合数', # 変更
             color_continuous_scale='Blues',
-            labels={'NumOfMatches': '累計試合数', 'Champion': 'クラブ名'}
+            labels={'累計防衛試合数': '試合数', 'クラブ名': 'クラブ'}
         )
         fig_matches.update_layout(yaxis={'categoryorder':'total ascending'})
         st.plotly_chart(fig_matches, use_container_width=True)
