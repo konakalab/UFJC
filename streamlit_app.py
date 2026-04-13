@@ -30,7 +30,7 @@ try:
     start_period = df['StartDate'].min().strftime('%Y/%m/%d')
     end_period = df['EndDate'].max().strftime('%Y/%m/%d')
 
-    st.title("🏆 非公式Jリーグ王座(UFJC) 歴代ランキング")
+    st.title("🏆 非公式Jリーグ王座(Unofficial Football J-League Champion, UFJC) 歴代ランキング")
 
     # --- 算出対象期間の表示 ---
     st.info(f"📅 **算出対象期間**: {start_period} ～ {end_period}")
