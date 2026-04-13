@@ -118,7 +118,7 @@ try:
             rangeslider=dict(visible=True), # 下部にスクロール/ズーム用のスライダーを追加
             type="date"
         ),
-        yaxis=dict(categoryorder="array", categoryarray=df["Champion_Disp"].unique())
+        yaxis=dict(categoryorder="array", categoryarray=df["Champion_Disp"].unique(), autorange="reversed")
     )
 
     st.plotly_chart(fig_timeline, use_container_width=True)
