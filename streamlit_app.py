@@ -14,8 +14,16 @@ def load_data():
 try:
     df = load_data()
 
+    # --- 算出対象期間の取得 ---
+    # StartDateの最初と最後を取得してフォーマット
+    start_period = df['StartDate'].min().strftime('%Y/%m/%d')
+    end_period = df['StartDate'].max().strftime('%Y/%m/%d')
+
     st.title("🏆 非公式Jリーグ王座 歴代ランキング")
-    st.markdown("MATLABで解析された最新のデータを表示しています。")
+
+    # --- 算出対象期間の表示（ここがご要望の箇所です） ---
+    # 小さめの文字（caption）や、枠囲み（info）で表示すると公式感が出ます
+    st.info(f"📅 **算出対象期間**: {start_period} ～ {end_period}")
 
     # --- データ集計 ---
     # クラブごとの合計保持日数と試合数を計算
