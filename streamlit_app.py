@@ -97,56 +97,63 @@ try:
     st.subheader("📋 クラブ別データ一覧")
     st.dataframe(ranking_df, use_container_width=True)
 
+    # ==========================================================
+    # ★ ここから下を追加・上書きしてください ★
+    # ==========================================================
     # --- 時系列タイムラインの追加 ---
     st.write("---")
     st.subheader("📅 UFJC 王座変遷タイムライン (1993 - 現在)")
-    st.markdown("下のスライダーを動かすことで、特定の年代を詳しく見ることができます。")
 
-    # 1. ランキング順（保持日数が長い順）のクラブリストを取得
-    # ranking_df は既に Duration で降順ソートされているため、その順番を利用します
+    # 1. ランキング順のクラブリストを取得（y軸の並び順に使用）
     sorted_clubs = ranking_df['クラブ名'].tolist()
 
-    # 2. タイムライン用の図を作成
+    # 2. カラーマップの準備（load_dataで作成した辞書を取得）
+    # load_dataの中で st.session_state['color_map'] = color_map としている前提
+    cmap = st.session_state.get('color_map', {})
+
+    # 3. タイムライン用の図を作成
     fig_timeline = px.timeline(
         df, 
         x_start="StartDate", 
         x_end="EndDate", 
-        y="Champion_Disp", # ここはマージ後の元列名
+        y="Champion_Disp",
         color="Champion_Disp", 
+        color_discrete_map=cmap, # ★ ここでCSVの色を適用
         hover_data={"StartDate": "|%Y/%m/%d", "EndDate": "|%Y/%m/%d", "Champion_Disp": False},
         labels={"Champion_Disp": "王者"}
     )
 
-    # 3. レイアウトのカスタマイズ
+    # 4. レイアウトのカスタマイズ（横線・縦線の設定込）
     fig_timeline.update_layout(
         xaxis_title="年",
         yaxis_title="クラブ名",
-        height=800, # クラブ数が多いので少し高さを出すと見やすいです
+        height=800, 
         showlegend=False,
         xaxis=dict(
             rangeslider=dict(visible=True),
             type="date",
-            showgrid=True,           # 縦線を表示
-            gridcolor="LightGray",    # 線の色
-            tickformat="%Y",         # 目盛りを「年」のみに
-            dtick="M12",             # ★ 12ヶ月（1年）ごとに線を引く
-            tick0="1993-01-01"       # ★ 1993年1月1日を基準点にする
+            showgrid=True,
+            gridcolor="LightGray",
+            tickformat="%Y",
+            dtick="M12",
+            tick0="1993-01-01"
         ),
-        # ★ ここがポイント：y軸の並び順をランキング順（sorted_clubs）に指定
         yaxis=dict(
             categoryorder="array",
             categoryarray=sorted_clubs,
-            autorange="reversed",  # リストの先頭（1位）を一番上にする
-            showgrid=True,       # グリッド線を表示
-            gridcolor="LightGray", # 線の色（薄いグレー）
-            gridwidth=1,         # 線の太さ
-            dtick=1,              # 全ての項目（クラブ名）に線を引く
-            layer="below traces", # 線をバー（帯）の下に配置
-            ticks="outside",      # 目盛りを外側に出して区切りを強調
-            tickson="boundaries"  # 目盛りとグリッド線を「項目の境界」に配置する
-        )
+            autorange="reversed",
+            showgrid=True,
+            gridcolor="LightGray",
+            gridwidth=1,
+            dtick=1,
+            layer="below traces",
+            tickson="boundaries"
+        ),
+        margin=dict(l=0, r=0, t=30, b=0)
     )
 
     st.plotly_chart(fig_timeline, use_container_width=True)
+
+# エラーハンドリングの締め（既存のコードの末尾）
 except Exception as e:
     st.error(f"エラーが発生しました: {e}")
