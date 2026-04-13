@@ -153,16 +153,16 @@ try:
         labels={"Champion_Disp": "王者"}
     )
 
-    # ★ ツールチップを「{クラブ名} {開始日}から{終了日} ({日数}日)」の形式に設定
+    # ツールチップのカスタマイズ
     fig_timeline.update_traces(
         hovertemplate=(
-            "<b>%{y}</b><br>" +                  # {クラブ名} を太字で
-            "%{start|%Y/%m/%d}から" +            # {開始日}
-            "%{end|%Y/%m/%d} " +                 # {終了日}
+            "<b>%{y}</b><br>" +                  # {クラブ名}
+            "%{base|%Y/%m/%d}から" +             # {開始日} ※px.timelineではbaseが開始日になります
+            "%{x|%Y/%m/%d} " +                  # {終了日} ※px.timelineではxが終了日になります
             "(%{customdata[0]}日)" +             # {日数}
-            "<extra></extra>"                    # 右側の余計なラベルを消す
+            "<extra></extra>"
         ),
-        # customdata に Duration(日数) を渡す
+        # customdataとしてDuration列の値を渡す
         customdata=filtered_df[["Duration"]]
     )
     
