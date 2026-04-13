@@ -58,6 +58,14 @@ try:
     latest_row = df.iloc[-1]
     current_champion_full = latest_row['Champion_Full']
     st.markdown(f"### 👑 現王者: **{current_champion_full}**")
+
+    # 一回り小さな文字で詳細を表示
+    # StartDate, Duration, NumOfMatches を使用
+    start_date_str = latest_row['StartDate'].strftime('%Y/%m/%d')
+    duration = latest_row['Duration']
+    matches = latest_row['NumOfMatches']
+    
+    st.markdown(f"##### 📅 開始日: {start_date_str} ｜ ⏳ 保持日数: {duration}日 ｜ ⚽ 防衛回数: {matches}回")
     st.write("---")
 
     # --- データ集計（以降は短縮名を使用） ---
