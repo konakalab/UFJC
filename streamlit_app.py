@@ -63,6 +63,14 @@ try:
     })
 
     # --- レイアウト ---
+    # --- 現在の王者の表示 ---
+    # データの最後の一行を取得
+    latest_row = df.iloc[-1]
+    current_champion = latest_row['Champion_Disp']
+    
+    st.markdown(f"### 👑 現王者: **{current_champion}**")
+    st.write("---") # 区切り線
+    
     col1, col2 = st.columns(2)
 
     with col1:
