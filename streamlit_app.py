@@ -114,50 +114,62 @@ try:
     st.subheader("📋 クラブ別データ一覧")
     st.dataframe(ranking_df, use_container_width=True)
 
-    # ==========================================================
-    # ★ ここから下を追加・上書きしてください ★
-    # ==========================================================
-    # --- 時系列タイムラインの追加 ---
+    # --- 時系列タイムライン ---
     st.write("---")
     st.subheader("📅 UFJC 王座変遷タイムライン (1993 - 現在)")
 
-    # 1. ランキング順のクラブリストを取得（y軸の並び順に使用）
-    sorted_clubs = ranking_df['クラブ名'].tolist()
+    # 1. ユーザーが期間を選択できるスライダーを設置（縦軸との連動のため）
+    min_date = df['StartDate'].min().to_pydatetime()
+    max_date = df['EndDate'].max().to_pydatetime()
+    
+    selected_range = st.slider(
+        "表示期間を選択してください（絞り込むと縦軸のクラブも自動で連動します）",
+        min_value=min_date,
+        max_value=max_date,
+        value=(min_date, max_date),
+        format="YYYY/MM"
+    )
 
-    # 2. カラーマップの準備（load_dataで作成した辞書を取得）
-    # load_dataの中で st.session_state['color_map'] = color_map としている前提
-    cmap = st.session_state.get('color_map', {})
+    # 2. 選択された期間内に王者だったデータのみにフィルタリング
+    mask = (df['EndDate'] >= pd.Timestamp(selected_range[0])) & \
+           (df['StartDate'] <= pd.Timestamp(selected_range[1]))
+    filtered_df = df.loc[mask].copy()
 
-    # 3. タイムライン用の図を作成
+    # 3. フィルタリング後のデータに含まれるクラブのみをy軸の並び順にする
+    # ランキング順(sorted_clubs)をベースに、現在含まれているクラブだけに絞る
+    current_sorted_clubs = [c for c in sorted_clubs if c in filtered_df['Champion_Disp'].unique()]
+
+    # 4. タイムライン用の図を作成（filtered_df を使用）
     fig_timeline = px.timeline(
-        df, 
+        filtered_df, 
         x_start="StartDate", 
         x_end="EndDate", 
         y="Champion_Disp",
         color="Champion_Disp", 
-        color_discrete_map=cmap, # ★ ここでCSVの色を適用
+        color_discrete_map=cmap,
         hover_data={"StartDate": "|%Y/%m/%d", "EndDate": "|%Y/%m/%d", "Champion_Disp": False},
         labels={"Champion_Disp": "王者"}
     )
 
-    # 4. レイアウトのカスタマイズ（横線・縦線の設定込）
+    # 5. レイアウトのカスタマイズ
     fig_timeline.update_layout(
         xaxis_title="年",
         yaxis_title="クラブ名",
-        height=800, 
+        height=max(400, len(current_sorted_clubs) * 25), # クラブ数に応じて高さを自動調整
         showlegend=False,
         xaxis=dict(
-            rangeslider=dict(visible=True),
             type="date",
             showgrid=True,
             gridcolor="LightGray",
             tickformat="%Y",
             dtick="M12",
-            tick0="1993-01-01"
+            tick0="1993-01-01",
+            # 横幅の初期表示範囲（必要に応じて指定）
+            range=[selected_range[0], selected_range[1]]
         ),
         yaxis=dict(
             categoryorder="array",
-            categoryarray=sorted_clubs,
+            categoryarray=current_sorted_clubs, # 絞り込まれたクラブのみ
             autorange="reversed",
             showgrid=True,
             gridcolor="LightGray",
