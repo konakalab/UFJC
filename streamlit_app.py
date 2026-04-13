@@ -121,44 +121,42 @@ try:
     st.write("---")
     st.subheader("📅 UFJC 王座変遷タイムライン (1993 - 現在)")
 
-    # 1. ユーザーが期間を選択できるスライダーを設置（縦軸との連動のため）
+    # 期間選択スライダー
     min_date = df['StartDate'].min().to_pydatetime()
     max_date = df['EndDate'].max().to_pydatetime()
     
     selected_range = st.slider(
-        "表示期間を選択してください（絞り込むと縦軸のクラブも自動で連動します）",
+        "表示期間を選択してください（絞り込むと縦軸のクラブも連動します）",
         min_value=min_date,
         max_value=max_date,
         value=(min_date, max_date),
         format="YYYY/MM"
     )
 
-    # 2. 選択された期間内に王者だったデータのみにフィルタリング
+    # データフィルタリング
     mask = (df['EndDate'] >= pd.Timestamp(selected_range[0])) & \
            (df['StartDate'] <= pd.Timestamp(selected_range[1]))
     filtered_df = df.loc[mask].copy()
 
-    # 3. フィルタリング後のデータに含まれるクラブのみをy軸の並び順にする
-    # ランキング順(sorted_clubs)をベースに、現在含まれているクラブだけに絞る
+    # ★ 期間内に存在するクラブだけに絞り込む
     current_sorted_clubs = [c for c in sorted_clubs if c in filtered_df['Champion_Disp'].unique()]
 
-    # 4. タイムライン用の図を作成（filtered_df を使用）
+    # タイムライン描画 (filtered_df を使用)
     fig_timeline = px.timeline(
         filtered_df, 
         x_start="StartDate", 
         x_end="EndDate", 
         y="Champion_Disp",
         color="Champion_Disp", 
-        color_discrete_map=cmap,
+        color_discrete_map=st.session_state.get('color_map', {}),
         hover_data={"StartDate": "|%Y/%m/%d", "EndDate": "|%Y/%m/%d", "Champion_Disp": False},
         labels={"Champion_Disp": "王者"}
     )
 
-    # 5. レイアウトのカスタマイズ
     fig_timeline.update_layout(
         xaxis_title="年",
         yaxis_title="クラブ名",
-        height=max(400, len(current_sorted_clubs) * 25), # クラブ数に応じて高さを自動調整
+        height=max(400, len(current_sorted_clubs) * 25), 
         showlegend=False,
         xaxis=dict(
             type="date",
@@ -167,12 +165,11 @@ try:
             tickformat="%Y",
             dtick="M12",
             tick0="1993-01-01",
-            # 横幅の初期表示範囲（必要に応じて指定）
-            range=[selected_range[0], selected_range[1]]
+            range=[selected_range[0], selected_range[1]] # 横幅の範囲指定
         ),
         yaxis=dict(
             categoryorder="array",
-            categoryarray=current_sorted_clubs, # 絞り込まれたクラブのみ
+            categoryarray=current_sorted_clubs, # ここで定義した変数を使う
             autorange="reversed",
             showgrid=True,
             gridcolor="LightGray",
