@@ -53,19 +53,6 @@ try:
         
     st.caption(f"Developed by [@konakalab](https://x.com/konakalab)")
 
-    # --- データ集計 (日本語表示用の列で集計) ---
-    ranking_df = df.groupby('Champion_Disp').agg({
-        'Duration': 'sum',
-        'NumOfMatches': 'sum'
-    }).sort_values(by='Duration', ascending=False).reset_index()
-
-    # 表示用の列名に変更
-    ranking_df = ranking_df.rename(columns={
-        'Champion_Disp': 'クラブ名',
-        'Duration': '累計保持日数',
-        'NumOfMatches': '累計防衛試合数'
-    })
-
     # --- レイアウト ---
     # --- 現王者の表示（ここだけ長いクラブ名を使用） ---
     latest_row = df.iloc[-1]
@@ -75,6 +62,18 @@ try:
     
     st.markdown(f"### 👑 現王者: **{current_champion}**")
     st.write("---") # 区切り線
+
+    # --- データ集計（以降は短縮名を使用） ---
+    ranking_df = df.groupby('Champion_Disp').agg({
+        'Duration': 'sum',
+        'NumOfMatches': 'sum'
+    }).sort_values(by='Duration', ascending=False).reset_index()
+
+    ranking_df = ranking_df.rename(columns={
+        'Champion_Disp': 'クラブ名',
+        'Duration': '累計保持日数',
+        'NumOfMatches': '累計防衛試合数'
+    })
     
     col1, col2 = st.columns(2)
 
