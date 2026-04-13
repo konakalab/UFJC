@@ -118,7 +118,7 @@ try:
             rangeslider=dict(visible=True), # 下部にスクロール/ズーム用のスライダーを追加
             type="date"
         ),
-        yaxis=dict(autorange="reversed") # 最新が上か、時系列順かはここで調整
+        yaxis=dict(categoryorder="array", categoryarray=df["Champion_Disp"].unique())
     )
 
     st.plotly_chart(fig_timeline, use_container_width=True)
