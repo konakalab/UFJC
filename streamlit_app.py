@@ -59,9 +59,6 @@ try:
     current_champion_full = latest_row['Champion_Full']
     st.markdown(f"### 👑 現王者: **{current_champion_full}**")
     st.write("---")
-    
-    st.markdown(f"### 👑 現王者: **{current_champion}**")
-    st.write("---") # 区切り線
 
     # --- データ集計（以降は短縮名を使用） ---
     ranking_df = df.groupby('Champion_Disp').agg({
