@@ -120,7 +120,12 @@ try:
         showlegend=False,
         xaxis=dict(
             rangeslider=dict(visible=True),
-            type="date"
+            type="date",
+            showgrid=True,           # 縦線を表示
+            gridcolor="LightGray",    # 線の色
+            tickformat="%Y",         # 目盛りを「年」のみに
+            dtick="M12",             # ★ 12ヶ月（1年）ごとに線を引く
+            tick0="1993-01-01"       # ★ 1993年1月1日を基準点にする
         ),
         # ★ ここがポイント：y軸の並び順をランキング順（sorted_clubs）に指定
         yaxis=dict(
