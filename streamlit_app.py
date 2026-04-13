@@ -97,28 +97,37 @@ try:
     st.subheader("📅 UFJC 王座変遷タイムライン (1993 - 現在)")
     st.markdown("下のスライダーを動かすことで、特定の年代を詳しく見ることができます。")
 
-    # タイムライン用の図を作成
+    # 1. ランキング順（保持日数が長い順）のクラブリストを取得
+    # ranking_df は既に Duration で降順ソートされているため、その順番を利用します
+    sorted_clubs = ranking_df['クラブ名'].tolist()
+
+    # 2. タイムライン用の図を作成
     fig_timeline = px.timeline(
         df, 
         x_start="StartDate", 
         x_end="EndDate", 
-        y="Champion_Disp",
-        color="Champion_Disp", # クラブごとに色分け
+        y="Champion_Disp", # ここはマージ後の元列名
+        color="Champion_Disp", 
         hover_data={"StartDate": "|%Y/%m/%d", "EndDate": "|%Y/%m/%d", "Champion_Disp": False},
         labels={"Champion_Disp": "王者"}
     )
 
-    # レイアウトのカスタマイズ
+    # 3. レイアウトのカスタマイズ
     fig_timeline.update_layout(
         xaxis_title="年",
         yaxis_title="クラブ名",
-        height=600,
-        showlegend=False, # クラブ数が多いので凡例は非表示
+        height=800, # クラブ数が多いので少し高さを出すと見やすいです
+        showlegend=False,
         xaxis=dict(
-            rangeslider=dict(visible=True), # 下部にスクロール/ズーム用のスライダーを追加
+            rangeslider=dict(visible=True),
             type="date"
         ),
-        yaxis=dict(categoryorder="array", categoryarray=df["Champion_Disp"].unique(), autorange="reversed")
+        # ★ ここがポイント：y軸の並び順をランキング順（sorted_clubs）に指定
+        yaxis=dict(
+            categoryorder="array",
+            categoryarray=sorted_clubs,
+            autorange="reversed"  # リストの先頭（1位）を一番上にする
+        )
     )
 
     st.plotly_chart(fig_timeline, use_container_width=True)
