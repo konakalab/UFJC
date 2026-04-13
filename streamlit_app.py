@@ -10,22 +10,26 @@ def load_data():
     # 1. メインデータの読み込み
     df = pd.read_csv('UFJC.csv', parse_dates=['StartDate', 'EndDate'])
     
-    # 2. 公式クラブ名対応表の読み込み
+    # 2. クラブ名対応表の読み込み
     try:
-        # club_names.csv を読み込む（id, japanese_name, short_name, club_color を想定）
         names_df = pd.read_csv('club_names.csv')
+        # IDをキーに結合
         df = pd.merge(df, names_df, left_on='Champion', right_on='id', how='left')
-        df['Champion_Disp'] = df['short_name'].fillna(df['Champion'])
         
-        # 【重要】クラブ名と色の対応辞書を作成
-        # short_name をキーにするか、Champion_Disp をキーにするかに合わせます
+        # 基本の表示用列は「短縮名(short_name)」を使用
+        df['Champion_Disp'] = df['short_name'].fillna(df['Champion'])
+        # 現王者用の「正式名称(name)」を保持
+        df['Champion_Full'] = df['name'].fillna(df['Champion'])
+        
+        # 短縮名をキーにして色対応辞書を作成
         color_map = dict(zip(names_df['short_name'], names_df['club_color']))
-        # 辞書をセッション状態などで保持するか、関数の戻り値に追加します
         st.session_state['color_map'] = color_map
         
     except Exception:
         df['Champion_Disp'] = df['Champion']
+        df['Champion_Full'] = df['Champion']
         st.session_state['color_map'] = {}
+        
     return df
 
 try:
@@ -63,10 +67,11 @@ try:
     })
 
     # --- レイアウト ---
-    # --- 現在の王者の表示 ---
-    # データの最後の一行を取得
+    # --- 現王者の表示（ここだけ長いクラブ名を使用） ---
     latest_row = df.iloc[-1]
-    current_champion = latest_row['Champion_Disp']
+    current_champion_full = latest_row['Champion_Full']
+    st.markdown(f"### 👑 現王者: **{current_champion_full}**")
+    st.write("---")
     
     st.markdown(f"### 👑 現王者: **{current_champion}**")
     st.write("---") # 区切り線
