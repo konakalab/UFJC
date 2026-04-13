@@ -12,15 +12,20 @@ def load_data():
     
     # 2. 公式クラブ名対応表の読み込み
     try:
+        # club_names.csv を読み込む（id, japanese_name, short_name, club_color を想定）
         names_df = pd.read_csv('club_names.csv')
-        # IDをキーに結合
         df = pd.merge(df, names_df, left_on='Champion', right_on='id', how='left')
-        # 短縮名(short_name)があれば使い、なければ元のID(Champion)を表示用にする
         df['Champion_Disp'] = df['short_name'].fillna(df['Champion'])
-    except Exception:
-        # 対応表がない場合の予備処理
-        df['Champion_Disp'] = df['Champion']
         
+        # 【重要】クラブ名と色の対応辞書を作成
+        # short_name をキーにするか、Champion_Disp をキーにするかに合わせます
+        color_map = dict(zip(names_df['short_name'], names_df['club_color']))
+        # 辞書をセッション状態などで保持するか、関数の戻り値に追加します
+        st.session_state['color_map'] = color_map
+        
+    except Exception:
+        df['Champion_Disp'] = df['Champion']
+        st.session_state['color_map'] = {}
     return df
 
 try:
