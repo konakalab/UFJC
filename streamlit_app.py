@@ -25,6 +25,18 @@ try:
     # 小さめの文字（caption）や、枠囲み（info）で表示すると公式感が出ます
     st.info(f"📅 **算出対象期間**: {start_period} ～ {end_period}")
 
+    # --- ツールチップ・キャプション ---
+    with st.expander("💡 算出内容"):
+        st.markdown(f"""
+        * このWebサイトでは「非公式Jリーグ王者(Unofficial Football J-League Champion)を集計・公開しています．
+        * 1993年のJリーグ開幕戦勝者(横浜マリノス)を初代UFJCとします．
+            * UFJCが次の試合で敗北した場合は王者が勝者に移動，引き分けと勝利で防衛．
+            * 90分での引き分けは防衛
+            * 以下の試合を対象とします．Ｊ１リーグ, Ｊ２リーグ, Ｊ３リーグ, 100年構想リーグ, ＪリーグYBCルヴァンカップ, チャンピオンシップ, Ｊ１・Ｊ２入れ替え戦, ＦＵＪＩ　ＸＥＲＯＸ　ＳＵＰＥＲ　ＣＵＰ, Ｊ１参入決定戦, Ｊ１昇格プレーオフ, Ｊ２・ＪＦＬ入れ替え戦, Ｊ２・Ｊ３入れ替え戦, Ｊ１参入プレーオフ, 明治安田生命チャンピオンシップ
+        """)
+        
+    st.caption(f"Developed by [@konakalab](https://x.com/konakalab) | 📅 データ更新：{analysis_period}")
+
     # --- データ集計 ---
     # クラブごとの合計保持日数と試合数を計算
     ranking_df = df.groupby('Champion').agg({
