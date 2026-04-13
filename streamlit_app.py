@@ -17,7 +17,7 @@ try:
     # --- 算出対象期間の取得 ---
     # StartDateの最初と最後を取得してフォーマット
     start_period = df['StartDate'].min().strftime('%Y/%m/%d')
-    end_period = df['StartDate'].max().strftime('%Y/%m/%d')
+    end_period = df['EndDate'].max().strftime('%Y/%m/%d')
 
     st.title("🏆 非公式Jリーグ王座 歴代ランキング")
 
