@@ -12,7 +12,7 @@ def load_data():
     
     # 2. 公式クラブ名対応表の読み込み
     try:
-        names_df = pd.read_csv('club_names_official.csv')
+        names_df = pd.read_csv('club_names.csv')
         # IDをキーに結合
         df = pd.merge(df, names_df, left_on='Champion', right_on='id', how='left')
         # 短縮名(short_name)があれば使い、なければ元のID(Champion)を表示用にする
