@@ -130,7 +130,10 @@ try:
             showgrid=True,       # グリッド線を表示
             gridcolor="LightGray", # 線の色（薄いグレー）
             gridwidth=1,         # 線の太さ
-            dtick=1              # 全ての項目（クラブ名）に線を引く
+            dtick=1,              # 全ての項目（クラブ名）に線を引く
+            layer="below traces", # 線をバー（帯）の下に配置
+            ticks="outside",      # 目盛りを外側に出して区切りを強調
+            tickson="boundaries"  # 目盛りとグリッド線を「項目の境界」に配置する
         )
     )
 
