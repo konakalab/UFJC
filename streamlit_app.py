@@ -145,7 +145,7 @@ try:
         x_end="EndDate", 
         y="Champion_Disp",
         color="Champion_Disp", 
-        color_discrete_map=st.session_state.get('color_map', {}),
+        color_discrete_map=cmap,
         # ★ 修正ポイント1: Duration を hover_data に含める（表示自体は False にしておく）
         hover_data={
             "StartDate": False, 
