@@ -1,4 +1,4 @@
-id,name,short_name
+﻿id,name,short_name
 kashima,鹿島アントラーズ,鹿島
 urawa,浦和レッズ,浦和
 kashiwa,柏レイソル,柏
@@ -57,3 +57,5 @@ kitakyushu,ギラヴァンツ北九州,北九州
 kumamoto,ロアッソ熊本,熊本
 kagoshima,鹿児島ユナイテッドＦＣ,鹿児島
 ryukyu,ＦＣ琉球,琉球
+mito,水戸ホーリーホック,水戸
+yokohamaf,横浜フリューゲルス,横浜F
