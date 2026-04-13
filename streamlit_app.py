@@ -8,7 +8,7 @@ st.set_page_config(page_title="UFJC Dashboard", layout="wide")
 @st.cache_data(ttl=60)
 def load_data():
     # CSV読み込み
-    df = pd.read_csv('UFJC.csv')
+    df = pd.read_csv('UFJC.csv', parse_dates=['StartDate', 'EndDate'])
     return df
 
 try:
