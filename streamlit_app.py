@@ -7,33 +7,30 @@ st.set_page_config(page_title="UFJC Dashboard", layout="wide")
 
 @st.cache_data(ttl=60)
 def load_data():
-    # 1. メインデータの読み込み
     df = pd.read_csv('UFJC.csv', parse_dates=['StartDate', 'EndDate'])
+    color_map = {} # デフォルトの空辞書
     
-    # 2. クラブ名対応表の読み込み
     try:
         names_df = pd.read_csv('club_names.csv')
-        # IDをキーに結合
         df = pd.merge(df, names_df, left_on='Champion', right_on='id', how='left')
         
-        # 基本の表示用列は「短縮名(short_name)」を使用
         df['Champion_Disp'] = df['short_name'].fillna(df['Champion'])
-        # 現王者用の「正式名称(name)」を保持
         df['Champion_Full'] = df['name'].fillna(df['Champion'])
         
-        # 短縮名をキーにして色対応辞書を作成
+        # 色辞書を作成
         color_map = dict(zip(names_df['short_name'], names_df['club_color']))
-        st.session_state['color_map'] = color_map
         
     except Exception:
         df['Champion_Disp'] = df['Champion']
         df['Champion_Full'] = df['Champion']
-        st.session_state['color_map'] = {}
         
-    return df
+    # df と color_map の両方を返す
+    return df, color_map
 
+# 呼び出し側
 try:
-    df = load_data()
+    df, cmap = load_data() # 両方受け取る
+    # st.session_state.get('color_map', {}) を使っていた箇所を、すべて cmap に置き換える
 
     # --- 算出対象期間の取得 ---
     start_period = df['StartDate'].min().strftime('%Y/%m/%d')
