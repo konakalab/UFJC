@@ -79,6 +79,9 @@ try:
         'Duration': '累計保持日数',
         'NumOfMatches': '累計防衛試合数'
     })
+
+    # ランキング順のリストを作成しておく
+    sorted_clubs = ranking_df['クラブ名'].tolist()
     
     col1, col2 = st.columns(2)
 
