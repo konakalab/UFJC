@@ -126,7 +126,11 @@ try:
         yaxis=dict(
             categoryorder="array",
             categoryarray=sorted_clubs,
-            autorange="reversed"  # リストの先頭（1位）を一番上にする
+            autorange="reversed",  # リストの先頭（1位）を一番上にする
+            showgrid=True,       # グリッド線を表示
+            gridcolor="LightGray", # 線の色（薄いグレー）
+            gridwidth=1,         # 線の太さ
+            dtick=1              # 全ての項目（クラブ名）に線を引く
         )
     )
 
